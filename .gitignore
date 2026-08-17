@@ -5,3 +5,4 @@ __pycache__/
 backend/data/raw/
 node_modules/
 .DS_Store
+backend/data/story.json
