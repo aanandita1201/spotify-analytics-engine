@@ -6,3 +6,11 @@ def unique_tracks(df):
 
 def unique_artists(df):
     return df["master_metadata_album_artist_name"].nunique()
+
+def top_artists(df, limit=10):
+    return (
+        df.groupby("master_metadata_album_artist_name")["minutes_played"]
+        .sum()
+        .sort_values(ascending=False)
+        .head(limit)
+    )
