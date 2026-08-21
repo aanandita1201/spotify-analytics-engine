@@ -1,16 +1,29 @@
 def total_minutes_played(df):
-    return df["minutes_played"].sum()
+    return df.loc[df["is_play"], "minutes_played"].sum()
 
 def unique_tracks(df):
-    return df["master_metadata_track_name"].nunique()
+    return df.loc[df["is_play"], "master_metadata_track_name"].nunique()
 
 def unique_artists(df):
-    return df["master_metadata_album_artist_name"].nunique()
+    return df.loc[df["is_play"], "master_metadata_album_artist_name"].nunique()
 
 def top_artists(df, limit=10):
     return (
-        df.groupby("master_metadata_album_artist_name")["minutes_played"]
+        df.loc[df["is_play"]]
+        .groupby("master_metadata_album_artist_name")["minutes_played"]
         .sum()
         .sort_values(ascending=False)
         .head(limit)
     )
+
+def top_tracks(df, limit=10):
+    return (
+        df.loc[df["is_play"]]
+        .groupby("master_metadata_track_name")["minutes_played"]
+        .sum()
+        .sort_values(ascending=False)
+        .head(limit)
+    )
+
+def total_plays(df):
+    return df["is_play"].sum()

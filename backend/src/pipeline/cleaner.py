@@ -24,4 +24,7 @@ def clean_streaming_history(records):
     # Remove records with invalid values
     df = df.dropna(subset=["ts", "ms_played"])
 
+    df["is_play"] = df["ms_played"] >= 30000
+
+
     return df
