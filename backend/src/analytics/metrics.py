@@ -3,3 +3,6 @@ def total_minutes_played(df):
 
 def unique_tracks(df):
     return df["master_metadata_track_name"].nunique()
+
+def unique_artists(df):
+    return df["master_metadata_album_artist_name"].nunique()
