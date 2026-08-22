@@ -66,3 +66,31 @@ def listening_by_date(df):
         .sum()
         .sort_values(ascending=False)
     )
+
+def listening_streaks(df):
+    listening_dates = (
+        df.loc[df["is_play"], "date"]
+        .drop_duplicates()
+        .sort_values()
+    )
+
+    if listening_dates.empty:
+        return {
+            "longest_streak": 0,
+            "current_streak": 0,
+        }
+
+    date_diffs = listening_dates.diff().dt.days
+
+    streak_id = (date_diffs != 1).cumsum()
+
+    streak_lengths = listening_dates.groupby(streak_id).size()
+
+    longest_streak = int(streak_lengths.max())
+
+    current_streak = int(streak_lengths.iloc[-1])
+
+    return {
+        "longest_streak": longest_streak,
+        "current_streak": current_streak,
+    }
