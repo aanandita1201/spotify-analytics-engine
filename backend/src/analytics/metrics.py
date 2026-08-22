@@ -147,3 +147,25 @@ def listening_by_period_of_day(df):
         .sum()
         .reindex(["Night", "Morning", "Afternoon", "Evening"])
     )
+
+def top_artist_by_year(df):
+    plays = df[
+        df["is_play"] &
+        df["master_metadata_album_artist_name"].notna()
+    ]
+
+    artist_year = (
+        plays.groupby(
+            ["year", "master_metadata_album_artist_name"]
+        )["minutes_played"]
+        .sum()
+        .reset_index()
+    )
+
+    return (
+        artist_year.loc[
+            artist_year.groupby("year")["minutes_played"].idxmax()
+        ]
+        .sort_values("year")
+        .set_index("year")
+    )
