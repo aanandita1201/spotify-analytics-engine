@@ -169,3 +169,25 @@ def top_artist_by_year(df):
         .sort_values("year")
         .set_index("year")
     )
+
+def top_track_by_year(df):
+    plays = df[
+        df["is_play"] &
+        df["master_metadata_track_name"].notna()
+    ]
+
+    track_year = (
+        plays.groupby(
+            ["year", "master_metadata_track_name"]
+        )["minutes_played"]
+        .sum()
+        .reset_index()
+    )
+
+    return (
+        track_year.loc[
+            track_year.groupby("year")["minutes_played"].idxmax()
+        ]
+        .sort_values("year")
+        .set_index("year")
+    )
