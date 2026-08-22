@@ -126,3 +126,24 @@ def artist_diversity(df):
     top_10_plays = artist_counts.head(10).sum()
 
     return top_10_plays / len(plays)
+
+def listening_by_period_of_day(df):
+    plays = df[df["is_play"]].copy()
+
+    def get_period(hour):
+        if hour < 6:
+            return "Night"
+        elif hour < 12:
+            return "Morning"
+        elif hour < 18:
+            return "Afternoon"
+        else:
+            return "Evening"
+
+    plays["period_of_day"] = plays["hour"].apply(get_period)
+
+    return (
+        plays.groupby("period_of_day")["minutes_played"]
+        .sum()
+        .reindex(["Night", "Morning", "Afternoon", "Evening"])
+    )
