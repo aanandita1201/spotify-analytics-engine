@@ -94,3 +94,17 @@ def listening_streaks(df):
         "longest_streak": longest_streak,
         "current_streak": current_streak,
     }
+
+def repeat_rate(df):
+    plays = (
+        df.loc[df["is_play"] & df["master_metadata_track_name"].notna()]
+        .sort_values("ts")
+        .copy()
+    )
+
+    if plays.empty:
+        return 0.0
+
+    plays["is_repeat"] = plays["master_metadata_track_name"].duplicated()
+
+    return plays["is_repeat"].mean()
