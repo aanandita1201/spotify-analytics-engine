@@ -36,3 +36,10 @@ def listening_by_year(df):
         .sort_index()
     )
 
+def listening_by_month(df):
+    return (
+        df.loc[df["is_play"]]
+        .groupby(["year", "month"])["minutes_played"]
+        .sum()
+        .sort_index()
+    )
