@@ -58,3 +58,11 @@ def listening_by_hour(df):
         .sum()
         .sort_index()
     )
+
+def listening_by_date(df):
+    return (
+        df.loc[df["is_play"]]
+        .groupby("date")["minutes_played"]
+        .sum()
+        .sort_values(ascending=False)
+    )
