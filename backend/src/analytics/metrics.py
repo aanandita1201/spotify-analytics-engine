@@ -27,3 +27,12 @@ def top_tracks(df, limit=10):
 
 def total_plays(df):
     return df["is_play"].sum()
+
+def listening_by_year(df):
+    return (
+        df.loc[df["is_play"]]
+        .groupby("year")["minutes_played"]
+        .sum()
+        .sort_index()
+    )
+
