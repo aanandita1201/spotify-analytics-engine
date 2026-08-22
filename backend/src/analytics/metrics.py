@@ -108,3 +108,21 @@ def repeat_rate(df):
     plays["is_repeat"] = plays["master_metadata_track_name"].duplicated()
 
     return plays["is_repeat"].mean()
+
+def artist_diversity(df):
+    plays = df[
+        df["is_play"] &
+        df["master_metadata_album_artist_name"].notna()
+    ]
+
+    if plays.empty:
+        return 0.0
+
+    artist_counts = (
+        plays["master_metadata_album_artist_name"]
+        .value_counts()
+    )
+
+    top_10_plays = artist_counts.head(10).sum()
+
+    return top_10_plays / len(plays)
