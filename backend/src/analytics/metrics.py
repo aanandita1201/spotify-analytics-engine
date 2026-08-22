@@ -50,3 +50,11 @@ def listening_by_day_of_week(df):
         .groupby("day_of_week")["minutes_played"]
         .sum()
     )
+
+def listening_by_hour(df):
+    return (
+        df.loc[df["is_play"]]
+        .groupby("hour")["minutes_played"]
+        .sum()
+        .sort_index()
+    )
