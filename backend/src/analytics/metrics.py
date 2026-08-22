@@ -191,3 +191,38 @@ def top_track_by_year(df):
         .sort_values("year")
         .set_index("year")
     )
+
+def longest_listening_gap(df):
+    plays = df.loc[df["is_play"]].copy()
+
+    listening_dates = sorted(plays["date"].unique())
+
+    if len(listening_dates) < 2:
+        return None
+
+    gaps = []
+
+    for i in range(1, len(listening_dates)):
+        previous_date = listening_dates[i - 1]
+        current_date = listening_dates[i]
+
+        gap_days = (current_date - previous_date).days
+
+        gaps.append({
+            "last_listening_date": previous_date,
+            "first_listening_date": current_date,
+            "gap_days": gap_days,
+        })
+
+    longest_gap = max(gaps, key=lambda x: x["gap_days"])
+
+    return_track = (
+    plays.loc[plays["date"] == longest_gap["first_listening_date"]]
+    .sort_values("ts")
+    .iloc[0]
+)
+
+    longest_gap["return_track"] = return_track["master_metadata_track_name"]
+    longest_gap["return_artist"] = return_track["master_metadata_album_artist_name"]
+
+    return longest_gap
