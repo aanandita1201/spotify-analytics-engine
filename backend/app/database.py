@@ -29,8 +29,12 @@ if "sslmode" not in DATABASE_URL:
     separator = "&" if "?" in DATABASE_URL else "?"
     DATABASE_URL = f"{DATABASE_URL}{separator}sslmode=require"
 
-engine = create_engine(DATABASE_URL, echo=False)
-
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,
+    pool_pre_ping=True,   # test each connection before using it, reconnect if dead
+    pool_recycle=300,     # recycle connections every 5 minutes, before Neon kills them
+)
 
 def init_db():
     """Create tables that don't exist yet. Safe to call on every startup."""
