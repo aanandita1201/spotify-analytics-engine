@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import StatCard from "../components/StatCard";
+import ListCard from "../components/ListCard";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 function ResultsPage() {
   const { id } = useParams();
-  const [status, setStatus] = useState("loading"); // loading | error | success
+  const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const [results, setResults] = useState(null);
 
@@ -37,21 +39,39 @@ function ResultsPage() {
   }, [id]);
 
   if (status === "loading") {
-    return <p>Loading your results...</p>;
+    return (
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+        <p className="text-white">Loading your results...</p>
+      </div>
+    );
   }
 
   if (status === "error") {
-    return <p style={{ color: "red" }}>{errorMessage}</p>;
+    return (
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+        <p className="text-red-400">{errorMessage}</p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>Your Spotify Story</h1>
-      <p><em>{results.disclaimer}</em></p>
+    <div className="min-h-screen bg-neutral-900 px-4 py-10">
+      <div className="max-w-xl mx-auto">
+        <h1 className="text-2xl font-bold text-white mb-2">
+          Your Spotify Story
+        </h1>
+        <p className="text-sm text-neutral-400 mb-8 italic">
+          {results.disclaimer}
+        </p>
 
-      {results.shareable_cards.map((card) => (
-        <pre key={card.id}>{JSON.stringify(card, null, 2)}</pre>
-      ))}
+        {results.shareable_cards.map((card) =>
+          card.type === "stat" ? (
+            <StatCard key={card.id} card={card} />
+          ) : (
+            <ListCard key={card.id} card={card} />
+          )
+        )}
+      </div>
     </div>
   );
 }
