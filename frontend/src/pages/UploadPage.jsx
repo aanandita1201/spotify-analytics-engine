@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function UploadPage() {
   const [files, setFiles] = useState([]);
-  const [status, setStatus] = useState("idle"); // idle | loading | error
+  const [status, setStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -48,35 +48,50 @@ function UploadPage() {
       navigate(`/results/${data.id}`);
     } catch (err) {
       setStatus("error");
-      setErrorMessage(
-        "Couldn't reach the server. Is the backend running?"
-      );
+      setErrorMessage("Couldn't reach the server. Is the backend running?");
     }
   }
 
   return (
-    <div>
-      <h1>Spotify Analytics Engine</h1>
-      <p>Upload your Spotify Extended Streaming History export.</p>
+    <div className="min-h-screen bg-neutral-900 flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Spotify Analytics Engine
+        </h1>
+        <p className="text-neutral-400 mb-8">
+          Upload your Spotify Extended Streaming History export to see your
+          listening story.
+        </p>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept=".json"
-          multiple
-          onChange={handleFileChange}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <label className="block w-full border-2 border-dashed border-neutral-700 rounded-xl p-6 text-center cursor-pointer hover:border-neutral-500 transition-colors">
+            <input
+              type="file"
+              accept=".json"
+              multiple
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <span className="text-neutral-300">
+              {files.length > 0
+                ? `${files.length} file(s) selected`
+                : "Click to select your Spotify JSON export files"}
+            </span>
+          </label>
 
-        {files.length > 0 && (
-          <p>{files.length} file(s) selected</p>
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full bg-green-500 hover:bg-green-400 disabled:bg-neutral-700 disabled:cursor-not-allowed text-neutral-900 font-semibold rounded-xl py-3 transition-colors"
+          >
+            {status === "loading" ? "Analyzing..." : "Upload"}
+          </button>
+        </form>
+
+        {status === "error" && (
+          <p className="text-red-400 text-sm mt-4">{errorMessage}</p>
         )}
-
-        <button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Analyzing..." : "Upload"}
-        </button>
-      </form>
-
-      {status === "error" && <p style={{ color: "red" }}>{errorMessage}</p>}
+      </div>
     </div>
   );
 }
